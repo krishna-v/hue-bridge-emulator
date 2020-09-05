@@ -1,0 +1,58 @@
+{
+    "swversion": "1.46.13_r26312",
+    "name": "LST002 RGB-CT Light Strip",
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-09-06T08:57:17"
+    },
+    "productid": "Philips-LST002-1-LedStripsv3",
+    "uniqueid": "00:17:88:01:00:00:05:02-0b",
+    "capabilities": {
+        "control": {
+            "ct": {
+                "max": 500,
+                "min": 153
+            },
+            "colorgamut": [
+                [0.6915, 0.3083],
+                [0.17, 0.7],
+                [0.1532, 0.0475]
+            ],
+            "mindimlevel": 40,
+            "maxlumen": 1600,
+            "colorgamuttype": "C"
+        },
+        "streaming": {
+            "renderer": true,
+            "proxy": true
+        },
+        "certified": true
+    },
+    "productname": "Hue lightstrip plus",
+    "state": {
+        "on": false,
+        "hue": 7613,
+        "colormode": "ct",
+        "effect": "none",
+        "alert": "select",
+        "xy": [0.5051, 0.4151],
+        "reachable": true,
+        "mode": "homeautomation",
+        "bri": 254,
+        "ct": 454,
+        "sat": 203
+    },
+    "manufacturername": "Philips",
+    "swconfigid": "A25796CB",
+    "config": {
+        "function": "mixed",
+        "startup": {
+            "configured": true,
+            "mode": "safety"
+        },
+        "direction": "omnidirectional",
+        "archetype": "huelightstrip"
+    },
+    "type": "Extended color light",
+    "modelid": "LST002"
+}

@@ -1,0 +1,56 @@
+{
+    "swversion": "5.127.1.26581",
+    "name": "LCT001 RGB-CT Light",
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2018-12-13T09:46:38"
+    },
+    "uniqueid": "00:17:88:01:00:00:02:01-0b",
+    "capabilities": {
+        "control": {
+            "ct": {
+                "max": 500,
+                "min": 153
+            },
+            "colorgamut": [
+                [0.675, 0.322],
+                [0.409, 0.518],
+                [0.167, 0.04]
+            ],
+            "mindimlevel": 5000,
+            "maxlumen": 600,
+            "colorgamuttype": "B"
+        },
+        "streaming": {
+            "renderer": true,
+            "proxy": false
+        },
+        "certified": true
+    },
+    "productname": "Hue color lamp",
+    "state": {
+        "on": false,
+        "hue": 10000,
+        "colormode": "ct",
+        "effect": "none",
+        "alert": "select",
+        "xy": [0.4575, 0.4101],
+        "reachable": true,
+        "mode": "homeautomation",
+        "bri": 100,
+        "ct": 366,
+        "sat": 240
+    },
+    "manufacturername": "Philips",
+    "config": {
+        "function": "mixed",
+        "startup": {
+            "configured": true,
+            "mode": "safety"
+        },
+        "direction": "omnidirectional",
+        "archetype": "sultanbulb"
+    },
+    "type": "Extended color light",
+    "modelid": "LCT001"
+}

@@ -1,0 +1,42 @@
+{
+    "swversion": "1.55.8_r28815",
+    "name": "LWV002 Vintage Dimmable Light",
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-10-30T20:20:20"
+    },
+    "productid": "Philips-LWV002-1-ST19CFDLv1",
+    "uniqueid": "00:17:88:01:00:00:03:02-0b",
+    "capabilities": {
+        "control": {
+            "mindimlevel": 2000,
+            "maxlumen": 530
+        },
+        "streaming": {
+            "renderer": false,
+            "proxy": false
+        },
+        "certified": true
+    },
+    "productname": "Hue filament bulb",
+    "state": {
+        "on": true,
+        "reachable": true,
+        "mode": "homeautomation",
+        "bri": 254,
+        "alert": "select"
+    },
+    "manufacturername": "Philips",
+    "swconfigid": "DDBBC361",
+    "config": {
+        "function": "decorative",
+        "startup": {
+            "configured": true,
+            "mode": "safety"
+        },
+        "direction": "omnidirectional",
+        "archetype": "vintagebulb"
+    },
+    "type": "Dimmable light",
+    "modelid": "LWV002"
+}

@@ -1,0 +1,58 @@
+{
+    "swversion": "1.46.13_r26312",
+    "name": "LCT015 RGB-CT Light",
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-01-01T00:00:00"
+    },
+    "productid": "Philips-LCT015-1-A19ECLv5",
+    "uniqueid": "00:17:88:01:00:00:02:15-0b",
+    "capabilities": {
+        "control": {
+            "ct": {
+                "min": 153,
+                "max": 500
+            },
+            "colorgamut": [
+                [ 0.6915, 0.3083 ],
+                [ 0.1700, 0.7000 ],
+                [ 0.1532, 0.0475 ]
+            ],
+            "mindimlevel": 1000,
+            "maxlumen": 806,
+            "colorgamuttype": "C"
+        },
+        "streaming": {
+            "renderer": true,
+            "proxy": true
+        },
+        "certified": true
+    },
+    "productname": "Hue color lamp",
+    "state": {
+        "on": true,
+        "hue": 0,
+        "colormode": "ct",
+        "effect": "none",
+        "alert": "none",
+        "xy": [ 0, 0 ],
+        "reachable": true,
+        "mode": "homeautomation",
+        "bri": 254,
+        "ct": 350,
+        "sat": 0
+    },
+    "manufacturername": "Philips",
+    "swconfigid": "52E3234B",
+    "config": {
+        "archetype": "sultanbulb",
+        "function": "mixed",
+        "direction": "omnidirectional",
+        "startup": {
+            "mode": "safety",
+            "configured": true
+        }
+    },
+    "type": "Extended color light",
+    "modelid": "LCT015"
+}

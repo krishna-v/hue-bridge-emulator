@@ -1,0 +1,40 @@
+{
+    "swversion": "5.127.1.26420",
+    "name": "LWB006 Dimmable Bulb",
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-10-09T17:53:15"
+    },
+    "uniqueid": "00:17:88:01:00:00:01:06-0b",
+    "capabilities": {
+        "control": {
+            "mindimlevel": 2000,
+            "maxlumen": 800
+        },
+        "streaming": {
+            "renderer": false,
+            "proxy": false
+        },
+        "certified": true
+    },
+    "productname": "Hue white lamp",
+    "state": {
+        "on": true,
+        "reachable": true,
+        "mode": "homeautomation",
+        "bri": 254,
+        "alert": "select"
+    },
+    "manufacturername": "Philips",
+    "config": {
+        "function": "functional",
+        "startup": {
+            "configured": true,
+            "mode": "safety"
+        },
+        "direction": "omnidirectional",
+        "archetype": "classicbulb"
+    },
+    "type": "Dimmable light",
+    "modelid": "LWB006"
+}

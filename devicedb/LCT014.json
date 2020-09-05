@@ -1,0 +1,58 @@
+{
+    "swversion": "1.46.13_r26312",
+    "name": "LCT014 RGB-CT Light",
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2018-12-08T09:30:59"
+    },
+    "productid": "Philips-LCT014-1-A19ECLv4",
+    "uniqueid": "00:17:88:01:00:00:02:14-0b",
+    "capabilities": {
+        "control": {
+            "ct": {
+                "max": 500,
+                "min": 153
+            },
+            "colorgamut": [
+                [0.6915, 0.3083],
+                [0.17, 0.7],
+                [0.1532, 0.0475]
+            ],
+            "mindimlevel": 1000,
+            "maxlumen": 800,
+            "colorgamuttype": "C"
+        },
+        "streaming": {
+            "renderer": true,
+            "proxy": true
+        },
+        "certified": true
+    },
+    "productname": "Hue color lamp",
+    "state": {
+        "on": false,
+        "hue": 38402,
+        "colormode": "hs",
+        "effect": "none",
+        "alert": "select",
+        "xy": [0.2034, 0.3244],
+        "reachable": true,
+        "mode": "homeautomation",
+        "bri": 100,
+        "ct": 153,
+        "sat": 204
+    },
+    "manufacturername": "Philips",
+    "swconfigid": "56D25448",
+    "config": {
+        "function": "mixed",
+        "startup": {
+            "configured": true,
+            "mode": "safety"
+        },
+        "direction": "omnidirectional",
+        "archetype": "sultanbulb"
+    },
+    "type": "Extended color light",
+    "modelid": "LCT014"
+}
