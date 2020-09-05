@@ -7,7 +7,7 @@
 const os = require('os');
 const express = require('express');
 const bodyParser = require('body-parser');
-const hueColorLamp = require('./hue-color-lamp.json');
+// const hueColorLamp = require('./hue-color-lamp.json');
 
 let _debug = false;
 
@@ -36,32 +36,116 @@ function getIpAddress() {
     throw 'No ip address found';
 }
 
-class HueBridgeEmulator {
-    constructor(conf = null) {
-        this.port = 80;
-        this.lights = {};
-        this.callbacks = {};
-        if(conf == null) return;
-        for (let key in conf) {
-            switch(key) {
-            case 'debug':
-                _debug = (conf[key] == true);
-                break;
-            case 'port':
-                this.port = conf[key];
-                break;
-            }
-        }
+class HueUPNPServer {
+    constructor(ipAddress, port, descriptionPath, bridgeId, uuid) {
+        this.ipAddress = ipAddress;
+        this.port = port;
+        this.descriptionPath = descriptionPath;
+        this.bridgeId = bridgeId;
+        this.uuid = uuid;
+        this.socket = null;
     }
 
     start() {
-        const descriptionPath = '/description.xml';
+        const dgram = require('dgram');
+        this.socket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
+
+        this.socket.on('message', (msg, rinfo) => {
+            if (msg.indexOf('M-SEARCH') >= 0) {
+                debug(`Received M-SEARCH from ${rinfo.address}:${rinfo.port}`);
+                const uin = `uuid:${this.uuid}`;
+
+                this.socket.send(this.createResponse(this.ipAddress, this.port, this.descriptionPath, this.bridgeId,
+                    'upnp:rootdevice', `${uin}::upnp:rootdevice`
+                ), rinfo.port, rinfo.address, (error) => {
+                    if (error) {
+                        console.error(error);
+                    }
+                });
+                this.socket.send(this.createResponse(this.ipAddress, this.port, this.descriptionPath, this.bridgeId,
+                    uin, uin
+                ), rinfo.port, rinfo.address, (error) => {
+                    if (error) {
+                        console.error(error);
+                    }
+                });
+                this.socket.send(this.createResponse(this.ipAddress, this.port, this.descriptionPath, this.bridgeId,
+                    'urn:schemas-upnp-org:device:basic:1', uin
+                ), rinfo.port, rinfo.address, (error) => {
+                    if (error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+
+        this.socket.on('listening', () => {
+            const address = this.socket.address();
+            console.log(`Discovery is listening on ${address.address}:${address.port}`);
+        });
+
+        this.socket.bind(1900, () => {
+            this.socket.addMembership('239.255.255.250');
+        });
+    }
+
+    stop() {
+        if(this.socket) {
+            this.socket.close();
+            this.socket = null;
+        }
+    }
+
+    createResponse(ip, port, path, bridgeid, st, usn) {
+        return `HTTP/1.1 200 OK
+HOST: 239.255.255.250:1900
+EXT:
+CACHE-CONTROL: max-age=100
+LOCATION: http://${ip}:${port}${path}
+SERVER: Linux/3.14.0 UPnP/1.0 IpBridge/1.29.0
+hue-bridgeid: ${bridgeid}
+ST: ${st}
+USN: ${usn}
+    
+    `.replace(new RegExp('\n', 'g'), '\r\n');
+    }
+}
+
+class HueBridgeEmulator {
+
+    constructor(conf = null) {
+        this.devicedb = ".";
+        this.port = 80;
+        this.lights = {};
+        this.callbacks = {};
+        this.models = {};
+        this.globalcb = null;
+        this.models['default'] = require('./hue-color-lamp.json');
+        this.discoveryServer = null;
+        this.doUPNP = true;
+
         const prefix = '001788';
         const postfix = '7ebe7d';
-        const serialNumber = `${prefix}${postfix}`;
-        const bridgeId = `${prefix}FFFE${postfix}`;
-        const uuid = `2f402f80-da50-11e1-9b23-${serialNumber}`;
-        const ipAddress = getIpAddress();
+        this.descriptionPath = '/description.xml';
+        this.serialNumber = `${prefix}${postfix}`;
+        this.bridgeId = `${prefix}FFFE${postfix}`;
+        this.uuid = `2f402f80-da50-11e1-9b23-${this.serialNumber}`;
+        this.ipAddress = getIpAddress();
+
+        if(!conf) return;
+        
+        console.log("Found Config...");
+        if(conf.debug) _debug = conf.debug;
+        if(conf.port) this.port = conf.port;
+        if(conf.callback) {
+            console.log("Found Callback Function");
+            this.globalcb = conf.callback;
+        }
+        if(conf.devicedb) this.devicedb = conf.devicedb;
+        if(conf.upnp) this.doUPNP = conf.upnp;
+    }
+
+    start() {
 
         const app = express();
         app.use(bodyParser.json());
@@ -72,8 +156,8 @@ class HueBridgeEmulator {
             next();
         });
 
-        app.get(descriptionPath, (req, res) => {
-            res.status(200).send(this.createDescription(ipAddress, this.port, serialNumber, uuid));
+        app.get(this.descriptionPath, (req, res) => {
+            res.status(200).send(this.createDescription(this.ipAddress, this.port, this.serialNumber, this.uuid));
         });
 
         app.post('/api', (req, res) => {
@@ -102,29 +186,32 @@ class HueBridgeEmulator {
             const light = this.lights[id];
             const callback = this.callbacks[id];
             const state = req.body;
-            debug(`Received state change ${JSON.stringify(state)}`);
+            debug(`Received state change ${JSON.stringify(state, 1)}`);
 
             if (light) {
                 const result = [];
+                if(this.globalcb) {
+                    this.globalcb(this, id, light, state);
+                }
 
                 for (let key in state) {
                     const value = state[key];
 
-                    if (callback) {
-                        try {
-                            callback(key, value);
-                        } catch (err) {
-                            console.error(err);
+                    // Assumption is that you want either the global callback or key level callback;
+                    // and that the global callback will process state updates.
+                    if(!this.globalcb) {
+                        if (callback) {
+                            try {
+                                callback(key, value);
+                            } catch (err) {
+                                console.error(err);
+                            }
                         }
+                        light.state[key] = value;
                     }
-
-                    light.state[key] = value;
                     result.push({ success: { [`/lights/${id}/state/${key}`]: value } });
                 }
-
-                res.status(200)
-                    .contentType('application/json')
-                    .send(JSON.stringify(result));
+                res.status(200).contentType('application/json').send(JSON.stringify(result));
             } else {
                 res.status(404).send();
             }
@@ -134,58 +221,68 @@ class HueBridgeEmulator {
             console.log(`Api is listening on ${restServer.address().address}:${restServer.address().port}`);
         });
 
-        const dgram = require('dgram');
-        const socket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
-
-        socket.on('message', (msg, rinfo) => {
-            if (msg.indexOf('M-SEARCH') >= 0) {
-                debug(`Received M-SEARCH from ${rinfo.address}:${rinfo.port}`);
-                const uin = `uuid:${uuid}`;
-
-                socket.send(this.createResponse(ipAddress, this.port, descriptionPath, bridgeId,
-                    'upnp:rootdevice', `${uin}::upnp:rootdevice`
-                ), rinfo.port, rinfo.address, (error) => {
-                    if (error) {
-                        console.error(error);
-                    }
-                });
-                socket.send(this.createResponse(ipAddress, this.port, descriptionPath, bridgeId,
-                    uin, uin
-                ), rinfo.port, rinfo.address, (error) => {
-                    if (error) {
-                        console.error(error);
-                    }
-                });
-                socket.send(this.createResponse(ipAddress, this.port, descriptionPath, bridgeId,
-                    'urn:schemas-upnp-org:device:basic:1', uin
-                ), rinfo.port, rinfo.address, (error) => {
-                    if (error) {
-                        console.error(error);
-                    }
-                });
-            }
-        });
-
-        socket.on('listening', () => {
-            const address = socket.address();
-            console.log(`Discovery is listening on ${address.address}:${address.port}`);
-        });
-
-        socket.bind(1900, () => {
-            socket.addMembership('239.255.255.250');
-        });
+        if(this.doUPNP) this.startUPNP();
     }
 
-    addLight(name, onChange) {
-        const light = JSON.parse(JSON.stringify(hueColorLamp));
-        light.name = name;
-        const ids = Object.keys(this.lights);
-        const lastId = ids.length > 0 ? Math.max.apply(null, ids) + 1 : 0;
-        this.lights[lastId] = light;
+    startUPNP() {
+        debug("Starting UPNP Server...");
+        if(this.discoveryServer) return;
+        this.discoveryServer = new HueUPNPServer(this.ipAddress, this.port, this.descriptionPath, this.bridgeId, this.uuid);
+        this.discoveryServer.start();
+    }
 
-        if (onChange) {
-            this.callbacks[lastId] = onChange;
+    stopUPNP() {
+        debug("Stopping UPNP Server...");
+        if(this.discoveryServer) {
+            this.discoveryServer.stop();
+            this.discoveryServer = null;
         }
+    }
+    
+
+    addLight(name, onChange) {
+        const nextId = Object.keys(this.lights).length + 1;
+        let light = null;
+
+        if(typeof name === "string") {
+            light = JSON.parse(JSON.stringify(this.models['default']));
+            light.name = name;
+        } else light = this.newLight(nextId, name);
+        this.lights[nextId] = light;
+        debug(`Added light with name ${light.name} as ID ${nextId}`);
+
+        if (onChange) this.callbacks[nextId] = onChange;
+        return nextId;
+    }
+
+    newLight(id, info) {
+        let light = null;
+        let modelname = 'default';
+        if(info.model) {
+            modelname = info.model;
+            if(!this.models[modelname]) {
+                const filename = `${this.devicedb}/${modelname}.json`;
+                try {
+                    this.models[modelname] = require(filename);
+                    light = JSON.parse(JSON.stringify(this.models[modelname]));
+                } catch (err) {
+                    console.log(`Error loading ${filename}. Using default model`);
+                    modelname = 'default';
+                }
+            }
+        }
+        light = JSON.parse(JSON.stringify(this.models[modelname]));
+
+        light.name = (info.name) ? info.name : `light-${id}`;
+        if(info.override) Object.assign(light, info.override);
+        return light;
+    }
+
+    setState(id, state) {
+        const light = this.lights[id];
+        if(!light) return;
+
+        for(let key in state) light.state[key] = state[key];
     }
 
     createDescription(ip, port, serialNumber, uuid) {
@@ -221,20 +318,7 @@ class HueBridgeEmulator {
 </root>
     `.replace(new RegExp('\n', 'g'), '\r\n');
     }
-
-    createResponse(ip, port, path, bridgeid, st, usn) {
-        return `HTTP/1.1 200 OK
-HOST: 239.255.255.250:1900
-EXT:
-CACHE-CONTROL: max-age=100
-LOCATION: http://${ip}:${port}${path}
-SERVER: Linux/3.14.0 UPnP/1.0 IpBridge/1.29.0
-hue-bridgeid: ${bridgeid}
-ST: ${st}
-USN: ${usn}
-    
-    `.replace(new RegExp('\n', 'g'), '\r\n');
-    }
 }
+
 
 module.exports = HueBridgeEmulator;

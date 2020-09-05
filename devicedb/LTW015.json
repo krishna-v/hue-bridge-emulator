@@ -1,0 +1,48 @@
+{
+    "swversion": "1.46.13_r26312",
+    "name": "LTW015 CT Light",
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2018-12-08T23:34:19"
+    },
+    "productid": "Philips-LTW015-1-A19CTv2",
+    "uniqueid": "00:17:88:01:00:00:02:15-0b",
+    "capabilities": {
+        "control": {
+            "mindimlevel": 1000,
+            "maxlumen": 800,
+            "ct": {
+                "max": 454,
+                "min": 153
+            }
+        },
+        "streaming": {
+            "renderer": false,
+            "proxy": false
+        },
+        "certified": true
+    },
+    "productname": "Hue ambiance lamp",
+    "state": {
+        "on": false,
+        "colormode": "ct",
+        "alert": "select",
+        "reachable": true,
+        "mode": "homeautomation",
+        "bri": 113,
+        "ct": 385
+    },
+    "manufacturername": "Philips",
+    "swconfigid": "28823930",
+    "config": {
+        "function": "functional",
+        "startup": {
+            "configured": true,
+            "mode": "safety"
+        },
+        "direction": "omnidirectional",
+        "archetype": "sultanbulb"
+    },
+    "type": "Color temperature light",
+    "modelid": "LTW015"
+}

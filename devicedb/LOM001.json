@@ -1,0 +1,38 @@
+{
+    "swversion": "1.65.9_hB3217DF",
+    "name": "LOM001 Hue Smart plug",
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2020-02-05T01:09:52"
+    },
+    "uniqueid": "00:17:88:01:00:00:06:01-0b",
+    "capabilities": {
+        "control": {},
+        "streaming": {
+            "renderer": false,
+            "proxy": false
+        },
+        "certified": true
+    },
+    "productname": "Hue Smart plug",
+    "state": {
+        "on": true,
+        "alert": "select",
+        "mode": "homeautomation",
+        "reachable": true
+    },
+    "manufacturername": "Signify Netherlands B.V.",
+    "config": {
+        "archetype": "plug",
+        "function": "functional",
+        "direction": "omnidirectional",
+        "startup": {
+            "mode": "safety",
+            "configured": true
+        }
+    },
+    "productid": "SmartPlug_OnOff_v01-00_01",
+    "type": "On/Off plug-in unit",
+    "modelid": "LOM001",
+    "swconfigid": "A641B5AB"
+}

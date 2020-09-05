@@ -1,0 +1,46 @@
+{
+    "swversion": "5.127.1.26420",
+    "name": "LTW004 CT lamp",
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-10-09T17:53:13"
+    },
+    "uniqueid": "00:17:88:01:00:00:02:04-0b",
+    "capabilities": {
+        "control": {
+            "mindimlevel": 1000,
+            "maxlumen": 800,
+            "ct": {
+                "max": 454,
+                "min": 153
+            }
+        },
+        "streaming": {
+            "renderer": false,
+            "proxy": false
+        },
+        "certified": true
+    },
+    "productname": "Hue ambiance lamp",
+    "state": {
+        "on": false,
+        "colormode": "ct",
+        "alert": "select",
+        "reachable": true,
+        "mode": "homeautomation",
+        "bri": 254,
+        "ct": 366
+    },
+    "manufacturername": "Philips",
+    "config": {
+        "function": "functional",
+        "startup": {
+            "configured": true,
+            "mode": "safety"
+        },
+        "direction": "omnidirectional",
+        "archetype": "sultanbulb"
+    },
+    "type": "Color temperature light",
+    "modelid": "LTW004"
+}

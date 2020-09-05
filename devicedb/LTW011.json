@@ -1,0 +1,48 @@
+{
+    "swversion": "1.46.13_r26312",
+    "name": "LTW011 CT downlight",
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2018-12-08T09:31:45"
+    },
+    "productid": "Philips-LTW011-1-BR30CTv1",
+    "uniqueid": "00:17:88:01:00:00:02:11-0b",
+    "capabilities": {
+        "control": {
+            "mindimlevel": 1000,
+            "maxlumen": 680,
+            "ct": {
+                "max": 454,
+                "min": 153
+            }
+        },
+        "streaming": {
+            "renderer": false,
+            "proxy": false
+        },
+        "certified": true
+    },
+    "productname": "Hue ambiance downlight",
+    "state": {
+        "on": false,
+        "colormode": "ct",
+        "alert": "select",
+        "reachable": true,
+        "mode": "homeautomation",
+        "bri": 254,
+        "ct": 454
+    },
+    "manufacturername": "Philips",
+    "swconfigid": "CC6469FE",
+    "config": {
+        "function": "functional",
+        "startup": {
+            "configured": true,
+            "mode": "safety"
+        },
+        "direction": "downwards",
+        "archetype": "floodbulb"
+    },
+    "type": "Color temperature light",
+    "modelid": "LTW011"
+}
