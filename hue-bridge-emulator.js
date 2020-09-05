@@ -135,14 +135,11 @@ class HueBridgeEmulator {
         if(!conf) return;
         
         console.log("Found Config...");
-        if(conf.debug) _debug = conf.debug;
+        if(conf.debug !== undefined) _debug = conf.debug;
         if(conf.port) this.port = conf.port;
-        if(conf.callback) {
-            console.log("Found Callback Function");
-            this.globalcb = conf.callback;
-        }
+        if(conf.callback) this.globalcb = conf.callback;
         if(conf.devicedb) this.devicedb = conf.devicedb;
-        if(conf.upnp) this.doUPNP = conf.upnp;
+        if(conf.upnp !== undefined) this.doUPNP = conf.upnp;
     }
 
     start() {
