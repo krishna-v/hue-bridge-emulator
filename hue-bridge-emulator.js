@@ -7,7 +7,8 @@
 const os = require('os');
 const express = require('express');
 const bodyParser = require('body-parser');
-// const hueColorLamp = require('./hue-color-lamp.json');
+
+const DEFAULT_DEVICE = './hue-color-lamp.json';
 
 let _debug = false;
 
@@ -114,13 +115,13 @@ USN: ${usn}
 class HueBridgeEmulator {
 
     constructor(conf = null) {
-        this.devicedb = ".";
+        this.devicedb = "./devicedb";
         this.port = 80;
         this.lights = {};
         this.callbacks = {};
         this.models = {};
         this.globalcb = null;
-        this.models['default'] = require('./hue-color-lamp.json');
+        this.models['default'] = require(DEFAULT_DEVICE);
         this.discoveryServer = null;
         this.doUPNP = true;
 
@@ -134,7 +135,7 @@ class HueBridgeEmulator {
 
         if(!conf) return;
         
-        console.log("Found Config...");
+        debug("Found Config...");
         if(conf.debug !== undefined) _debug = conf.debug;
         if(conf.port) this.port = conf.port;
         if(conf.callback) this.globalcb = conf.callback;
@@ -194,20 +195,18 @@ class HueBridgeEmulator {
                 for (let key in state) {
                     const value = state[key];
 
-                    // Assumption is that you want either the global callback or key level callback;
-                    // and that the global callback will process state updates.
-                    if(!this.globalcb) {
-                        if (callback) {
-                            try {
-                                callback(key, value);
-                            } catch (err) {
-                                console.error(err);
-                            }
+                    if (callback) {
+                        try {
+                            callback(key, value);
+                        } catch (err) {
+                            console.error(err);
                         }
-                        light.state[key] = value;
                     }
+                    // Global callback will process state updates.
+                    if(!this.globalcb) light.state[key] = value;
                     result.push({ success: { [`/lights/${id}/state/${key}`]: value } });
                 }
+                // TODO: Mechanism to allow callback to set an error condition?
                 res.status(200).contentType('application/json').send(JSON.stringify(result));
             } else {
                 res.status(404).send();

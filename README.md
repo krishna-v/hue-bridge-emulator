@@ -9,4 +9,5 @@
 Emulate a hue bridge to interface with hue compatible devices like the Amazon Echo.
 
 # How to use
-See `./examples/color-bulb.js` for details.
+See `./examples/color-bulb.js` for a simple example.
+See `.examples/huectrl-server.js` for an example with configuration setting and multiple types of devices.
