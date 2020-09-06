@@ -57,7 +57,7 @@ const bridgeConf = {
                                 // Setting global callback disables automatic state update.
                                 // Call hbe.setState() in the clalback.
 //        devicedb: '/usr/local/lib/devicedb', // override location of device descriptions to load.
-        upnp: true      // whether to start UPNP server when HueBridgeEmulator.start() is called.
+        upnp: true      // start UPNP server automatically. default: true.
 };
 
 const hueBridgeEmulator = new HueBridgeEmulator(bridgeConf);
