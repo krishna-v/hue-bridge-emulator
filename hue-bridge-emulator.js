@@ -115,32 +115,28 @@ USN: ${usn}
 class HueBridgeEmulator {
 
     constructor(conf = null) {
-        this.devicedb = "./devicedb";
-        this.port = 80;
+
         this.lights = {};
         this.callbacks = {};
         this.models = {};
-        this.globalcb = null;
         this.models['default'] = require(DEFAULT_DEVICE);
         this.discoveryServer = null;
-        this.doUPNP = true;
 
-        const prefix = '001788';
-        const postfix = '7ebe7d';
+        if(!conf) conf = {};;
+        _debug = (conf.debug === undefined) ? false : conf.debug;
+        this.devicedb = (conf.devicedb === undefined) ? "./devicedb" : conf.devicedb;
+        this.port = (conf.port === undefined) ? 80 : conf.port;
+        this.globalcb = (conf.callback === undefined) ? null : conf.callback;
+        this.ipAddress = (conf.ip === undefined) ? getIpAddress() : conf.ip;
+        this.doUPNP = (conf.upnp === undefined) ? true : conf.upnp;
+
+        const manufacturerId = '001788';
+        const deviceid = (conf.deviceid === undefined) ? '7ebe7d' : conf.deviceid;
+
         this.descriptionPath = '/description.xml';
-        this.serialNumber = `${prefix}${postfix}`;
-        this.bridgeId = `${prefix}FFFE${postfix}`;
+        this.serialNumber = `${manufacturerId}${deviceid}`;
+        this.bridgeId = `${manufacturerId}FFFE${deviceid}`;
         this.uuid = `2f402f80-da50-11e1-9b23-${this.serialNumber}`;
-        this.ipAddress = getIpAddress();
-
-        if(!conf) return;
-        
-        debug("Found Config...");
-        if(conf.debug !== undefined) _debug = conf.debug;
-        if(conf.port) this.port = conf.port;
-        if(conf.callback) this.globalcb = conf.callback;
-        if(conf.devicedb) this.devicedb = conf.devicedb;
-        if(conf.upnp !== undefined) this.doUPNP = conf.upnp;
     }
 
     start() {
