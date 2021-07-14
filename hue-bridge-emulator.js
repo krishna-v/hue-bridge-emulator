@@ -120,7 +120,6 @@ class HueBridgeEmulator {
         this.callbacks = {};
         this.models = {};
         this.globalcb = null;
-        this.models['default'] = require('./hue-color-lamp.json');
         this.discoveryServer = null;
         this.doUPNP = true;
 
@@ -140,6 +139,8 @@ class HueBridgeEmulator {
         if(conf.callback) this.globalcb = conf.callback;
         if(conf.devicedb) this.devicedb = conf.devicedb;
         if(conf.upnp !== undefined) this.doUPNP = conf.upnp;
+
+        this.models['default'] = require(`${this.devicedb}/LCT016.json`);
     }
 
     start() {
@@ -237,24 +238,22 @@ class HueBridgeEmulator {
     }
     
 
+    // FIXME: Legacy function to retain compatibility with tim-hellhake/hue-bridge-emulator. Use addDevice instead.
     addLight(name, onChange) {
         const nextId = Object.keys(this.lights).length + 1;
-        let light = null;
-
-        if(typeof name === "string") {
-            light = JSON.parse(JSON.stringify(this.models['default']));
-            light.name = name;
-        } else light = this.newLight(nextId, name);
+        const light = JSON.parse(JSON.stringify(this.models['default']));
+        light.name = name;
         this.lights[nextId] = light;
-        debug(`Added light with name ${light.name} as ID ${nextId}`);
-
+        debug(`Warning: Legacy Function addLight() Added light with name ${light.name} as ID ${nextId}`);
         if (onChange) this.callbacks[nextId] = onChange;
         return nextId;
     }
 
-    newLight(id, info) {
+    addDevice(info, onChange) {
+        const hueID = (info.hueID !== undefined) ? info.hueID : Object.keys(this.lights).length + 1;
         let light = null;
         let modelname = 'default';
+
         if(info.model) {
             modelname = info.model;
             if(!this.models[modelname]) {
@@ -268,11 +267,13 @@ class HueBridgeEmulator {
                 }
             }
         }
-        light = JSON.parse(JSON.stringify(this.models[modelname]));
-
-        light.name = (info.name) ? info.name : `light-${id}`;
+        if(!light) light = JSON.parse(JSON.stringify(this.models[modelname]));
+        light.name = (info.name) ? info.name : `light-${hueID}`;
         if(info.override) Object.assign(light, info.override);
-        return light;
+        this.lights[hueID] = light;
+        if (onChange) this.callbacks[hueID] = onChange;
+        debug(`Added light with name ${light.name} as ID ${hueID}`);
+        return hueID;
     }
 
     setState(id, state) {

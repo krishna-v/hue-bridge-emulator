@@ -39,7 +39,7 @@ const hueDevices = {};
 
 /** Parameters:
  *  hbe:    reference to the HueBridgeEmulator object
- *  id:     device id returned by addLight()
+ *  id:     device id returned by addDevice()
  *  device: device struct as managed by the HueBridgeEmulator
  *  state:  new state passed in from request.
  */ 
@@ -66,7 +66,7 @@ function loadAppliances(map) {
             else lightspec.model = "LOM001";
             // Override parts of the loaded model spec to customize the device.
             lightspec.override = { uniqueid: `00:17:88:01:${room.padStart(2,'0')}:${ctrl.padStart(2,'0')}:01:01-0b` }
-            const id = hueBridgeEmulator.addLight(lightspec);
+            const id = hueBridgeEmulator.addDevice(lightspec);
             hueDevices[id] = { "room": room, "ctrl": ctrl };
         }
     }
