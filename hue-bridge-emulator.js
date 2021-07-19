@@ -9,12 +9,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 // const hueColorLamp = require('./hue-color-lamp.json');
 
-let _debug = false;
+let _debug = 1; // 0: WARN, 1: INFO, 2: DEBUG...
 
-function debug(log) {
-    if (_debug) {
-        console.log(log);
-    }
+function debug(level, log) {
+    if (_debug >= level) console.log(log);
 }
 
 function getIpAddress() {
@@ -27,7 +25,7 @@ function getIpAddress() {
             const subInterface = networkInterface[subInterfaceName];
 
             if (subInterface.family == 'IPv4' && subInterface.internal == false) {
-                debug(`Found ip address ${subInterface.address}`);
+                debug(1, `Found ip address ${subInterface.address}`);
                 return subInterface.address;
             }
         }
@@ -52,7 +50,7 @@ class HueUPNPServer {
 
         this.socket.on('message', (msg, rinfo) => {
             if (msg.indexOf('M-SEARCH') >= 0) {
-                debug(`Received M-SEARCH from ${rinfo.address}:${rinfo.port}`);
+                debug(1, `Received M-SEARCH from ${rinfo.address}:${rinfo.port}`);
                 const uin = `uuid:${this.uuid}`;
 
                 this.socket.send(this.createResponse(this.ipAddress, this.port, this.descriptionPath, this.bridgeId,
@@ -150,7 +148,7 @@ class HueBridgeEmulator {
         app.use(bodyParser.urlencoded({ extended: true }));
 
         app.use((req, res, next) => {
-            debug(`${req.ip} ${req.method} ${req.originalUrl}`);
+            debug(2, `${req.ip} ${req.method} ${req.originalUrl}`);
             next();
         });
 
@@ -184,7 +182,7 @@ class HueBridgeEmulator {
             const light = this.lights[id];
             const callback = this.callbacks[id];
             const state = req.body;
-            debug(`Received state change ${JSON.stringify(state, 1)}`);
+            debug(1, `Received state change ${JSON.stringify(state, 1)}`);
 
             if (light) {
                 const result = [];
@@ -223,14 +221,14 @@ class HueBridgeEmulator {
     }
 
     startUPNP() {
-        debug("Starting UPNP Server...");
+        debug(1, "Starting UPNP Server...");
         if(this.discoveryServer) return;
         this.discoveryServer = new HueUPNPServer(this.ipAddress, this.port, this.descriptionPath, this.bridgeId, this.uuid);
         this.discoveryServer.start();
     }
 
     stopUPNP() {
-        debug("Stopping UPNP Server...");
+        debug(1, "Stopping UPNP Server...");
         if(this.discoveryServer) {
             this.discoveryServer.stop();
             this.discoveryServer = null;
@@ -244,7 +242,7 @@ class HueBridgeEmulator {
         const light = JSON.parse(JSON.stringify(this.models['default']));
         light.name = name;
         this.lights[nextId] = light;
-        debug(`Warning: Legacy Function addLight() Added light with name ${light.name} as ID ${nextId}`);
+        debug(0, `Warning: Legacy Function addLight() Added light with name ${light.name} as ID ${nextId}`);
         if (onChange) this.callbacks[nextId] = onChange;
         return nextId;
     }
@@ -267,12 +265,12 @@ class HueBridgeEmulator {
                 }
             }
         }
-        if(!light) light = JSON.parse(JSON.stringify(this.models[modelname]));
+	if(!light) light = JSON.parse(JSON.stringify(this.models[modelname]));
         light.name = (info.name) ? info.name : `light-${hueID}`;
         if(info.override) Object.assign(light, info.override);
         this.lights[hueID] = light;
         if (onChange) this.callbacks[hueID] = onChange;
-        debug(`Added light with name ${light.name} as ID ${hueID}`);
+        debug(1, `Added light with name ${light.name} as ID ${hueID}`);
         return hueID;
     }
 
