@@ -112,7 +112,7 @@ USN: ${usn}
 class HueBridgeEmulator {
 
     constructor(conf = null) {
-        this.devicedb = ".";
+        this.devicedb = '.';
         this.port = 80;
         this.lights = {};
         this.callbacks = {};
@@ -131,7 +131,7 @@ class HueBridgeEmulator {
 
         if(!conf) return;
         
-        console.log("Found Config...");
+        console.log('Found Config...');
         if(conf.debug !== undefined) _debug = conf.debug;
         if(conf.port) this.port = conf.port;
         if(conf.callback) this.globalcb = conf.callback;
@@ -221,14 +221,14 @@ class HueBridgeEmulator {
     }
 
     startUPNP() {
-        debug(1, "Starting UPNP Server...");
+        debug(1, 'Starting UPNP Server...');
         if(this.discoveryServer) return;
         this.discoveryServer = new HueUPNPServer(this.ipAddress, this.port, this.descriptionPath, this.bridgeId, this.uuid);
         this.discoveryServer.start();
     }
 
     stopUPNP() {
-        debug(1, "Stopping UPNP Server...");
+        debug(1, 'Stopping UPNP Server...');
         if(this.discoveryServer) {
             this.discoveryServer.stop();
             this.discoveryServer = null;
@@ -265,7 +265,7 @@ class HueBridgeEmulator {
                 }
             }
         }
-	if(!light) light = JSON.parse(JSON.stringify(this.models[modelname]));
+        if(!light) light = JSON.parse(JSON.stringify(this.models[modelname]));
         light.name = (info.name) ? info.name : `light-${hueID}`;
         if(info.override) Object.assign(light, info.override);
         this.lights[hueID] = light;
