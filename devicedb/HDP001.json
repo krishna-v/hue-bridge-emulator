@@ -1,0 +1,41 @@
+{
+    "swversion": "5.127.1.26420",
+    "name": "HDP001 Dimmable Unit",
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-10-09T17:53:15"
+    },
+    "uniqueid": "00:17:88:01:00:00:01:07-0b",
+    "capabilities": {
+        "control": {
+            "mindimlevel": 2000,
+            "maxlumen": 800
+        },
+        "streaming": {
+            "renderer": false,
+            "proxy": false
+        },
+        "certified": true
+    },
+    "productname": "Hue Dimmable Unit",
+    "state": {
+        "on": true,
+        "reachable": true,
+        "mode": "homeautomation",
+        "bri": 254,
+        "alert": "select"
+    },
+    "manufacturername": "HomeControl",
+    "config": {
+        "function": "functional",
+        "direction": "omnidirectional",
+        "archetype": "plug",
+        "startup": {
+            "configured": true,
+            "mode": "safety"
+        }
+    },
+    "type": "Dimmable plug-in unit",
+    "modelid": "HDP001",
+    "productid": "HomeControl_Dimmable_Unit_v01-00" 
+}

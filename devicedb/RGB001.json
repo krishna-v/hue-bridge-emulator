@@ -1,0 +1,53 @@
+{
+    "swversion": "1.46.13_r26312",
+    "name": "RGB001 RGB Light",
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-09-10T08:04:18"
+    },
+    "productid": "HomeControl-RGB001-1-A19ECLv5",
+    "uniqueid": "00:17:88:01:00:00:02:17-0b",
+    "capabilities": {
+        "control": {
+            "colorgamut": [
+                [0.6915, 0.3083],
+                [0.17, 0.7],
+                [0.1532, 0.0475]
+            ],
+            "mindimlevel": 1000,
+            "maxlumen": 800,
+            "colorgamuttype": "C"
+        },
+        "streaming": {
+            "renderer": true,
+            "proxy": true
+        },
+        "certified": true
+    },
+    "productname": "Hue RGB lamp",
+    "state": {
+        "on": false,
+        "hue": 7613,
+        "colormode": "hs",
+        "effect": "none",
+        "alert": "select",
+        "xy": [0.5051, 0.4151],
+        "reachable": true,
+        "mode": "homeautomation",
+        "bri": 254,
+        "sat": 203
+    },
+    "manufacturername": "HomeControl",
+    "swconfigid": "9DC82D22",
+    "config": {
+        "function": "decorative",
+        "startup": {
+            "configured": true,
+            "mode": "safety"
+        },
+        "direction": "omnidirectional",
+        "archetype": "sultanbulb"
+    },
+    "type": "Color light",
+    "modelid": "RGB001"
+}
